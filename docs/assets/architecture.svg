@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="440" viewBox="0 0 1040 440">
+  <rect width="1040" height="440" fill="#f8fafc"/>
+  <text x="40" y="48" font-family="Arial" font-size="26" font-weight="700" fill="#111827">AWS RAG Retrieval Platform Architecture</text>
+  <g font-family="Arial" font-size="15" fill="#111827">
+    <rect x="50" y="105" width="145" height="70" rx="8" fill="#dbeafe" stroke="#2563eb"/>
+    <text x="94" y="145">Docs</text>
+    <rect x="255" y="90" width="170" height="100" rx="8" fill="#dcfce7" stroke="#16a34a"/>
+    <text x="306" y="128">Ingestion</text>
+    <text x="288" y="154" font-size="13">chunking strategies</text>
+    <rect x="485" y="90" width="170" height="100" rx="8" fill="#fef3c7" stroke="#d97706"/>
+    <text x="528" y="128">Retrieval Index</text>
+    <text x="525" y="154" font-size="13">local / vector DB</text>
+    <rect x="715" y="90" width="170" height="100" rx="8" fill="#ede9fe" stroke="#7c3aed"/>
+    <text x="765" y="128">FastAPI</text>
+    <text x="747" y="154" font-size="13">query + citations</text>
+    <rect x="715" y="240" width="170" height="80" rx="8" fill="#fee2e2" stroke="#dc2626"/>
+    <text x="754" y="276">Bedrock Adapter</text>
+    <text x="756" y="300" font-size="13">private deploy</text>
+    <rect x="485" y="250" width="170" height="80" rx="8" fill="#cffafe" stroke="#0891b2"/>
+    <text x="548" y="286">Evals</text>
+    <text x="520" y="310" font-size="13">recall@k + regressions</text>
+  </g>
+  <g stroke="#475569" stroke-width="2" fill="none" marker-end="url(#arrow)">
+    <path d="M195 140 L255 140"/>
+    <path d="M425 140 L485 140"/>
+    <path d="M655 140 L715 140"/>
+    <path d="M800 190 L800 240"/>
+    <path d="M570 190 L570 250"/>
+  </g>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#475569"/>
+    </marker>
+  </defs>
+</svg>
+

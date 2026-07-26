@@ -1,0 +1,9 @@
+[project]
+name = "aws-rag-retrieval-platform"
+version = "0.1.0"
+description = "AWS-oriented RAG retrieval platform with local evaluation."
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+

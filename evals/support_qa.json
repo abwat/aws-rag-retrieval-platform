@@ -1,0 +1,29 @@
+{
+  "cases": [
+    {
+      "question": "How should the service behave if secrets are missing?",
+      "expected_document": "operations"
+    },
+    {
+      "question": "Which alarms should we create for Bedrock timeout and empty retrievals?",
+      "expected_document": "operations"
+    },
+    {
+      "question": "What chunking strategy keeps section context together?",
+      "expected_document": "retrieval"
+    },
+    {
+      "question": "How do we measure retrieval quality before shipping a chunking change?",
+      "expected_document": "retrieval"
+    },
+    {
+      "question": "Why is Bedrock behind a generation adapter?",
+      "expected_document": "aws_architecture"
+    },
+    {
+      "question": "Which AWS services are part of the target deployment?",
+      "expected_document": "aws_architecture"
+    }
+  ]
+}
+

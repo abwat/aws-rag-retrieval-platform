@@ -1,0 +1,10 @@
+.venv/
+.pycache_tmp/
+__pycache__/
+*.pyc
+.git/
+.pytest_cache/
+local_index.json
+.env
+.env.*
+!.env.example
