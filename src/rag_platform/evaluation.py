@@ -57,3 +57,27 @@ def recall_at_k(index: SparseRetrievalIndex, cases: list[EvalCase], k: int = 3) 
         return 0.0
     results = evaluate_cases(index, cases, k)
     return sum(1 for result in results if result.hit) / len(cases)
+
+
+def mean_reciprocal_rank(index: SparseRetrievalIndex, cases: list[EvalCase], k: int = 3) -> float:
+    if not cases:
+        return 0.0
+    total = 0.0
+    for result in evaluate_cases(index, cases, k):
+        try:
+            rank = result.retrieved_documents.index(result.expected_document) + 1
+        except ValueError:
+            continue
+        total += 1 / rank
+    return total / len(cases)
+
+
+def precision_at_k(index: SparseRetrievalIndex, cases: list[EvalCase], k: int = 3) -> float:
+    if not cases or k <= 0:
+        return 0.0
+    results = evaluate_cases(index, cases, k)
+    hits = sum(
+        result.retrieved_documents[:k].count(result.expected_document)
+        for result in results
+    )
+    return hits / (len(cases) * k)

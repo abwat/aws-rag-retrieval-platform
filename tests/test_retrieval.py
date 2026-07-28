@@ -2,7 +2,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from rag_platform.evaluation import EvalCase, recall_at_k
+from rag_platform.evaluation import EvalCase, mean_reciprocal_rank, precision_at_k, recall_at_k
 from rag_platform.ingestion import build_chunks
 from rag_platform.retrieval import SparseRetrievalIndex
 
@@ -39,7 +39,19 @@ class RetrievalTest(unittest.TestCase):
 
         self.assertEqual(score, 1.0)
 
+    def test_ranking_metrics_reward_early_expected_documents(self) -> None:
+        chunks = build_chunks(
+            {
+                "operations": "# Operations\nMissing secrets fail readiness checks.",
+                "retrieval": "# Retrieval\nChunking benchmarks compare retrieval quality.",
+            }
+        )
+        index = SparseRetrievalIndex(chunks)
+        cases = [EvalCase("How are missing secrets handled?", "operations")]
+
+        self.assertEqual(mean_reciprocal_rank(index, cases, k=2), 1.0)
+        self.assertEqual(precision_at_k(index, cases, k=2), 0.5)
+
 
 if __name__ == "__main__":
     unittest.main()
-

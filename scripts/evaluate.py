@@ -6,7 +6,14 @@ import argparse
 from dataclasses import asdict
 import json
 
-from rag_platform.evaluation import DEFAULT_CASES, evaluate_cases, load_cases, recall_at_k
+from rag_platform.evaluation import (
+    DEFAULT_CASES,
+    evaluate_cases,
+    load_cases,
+    mean_reciprocal_rank,
+    precision_at_k,
+    recall_at_k,
+)
 from rag_platform.retrieval import SparseRetrievalIndex
 
 
@@ -26,12 +33,14 @@ def main() -> None:
         "cases": len(cases),
         "k": args.k,
         "recall_at_k": round(score, 3),
+        "precision_at_k": round(precision_at_k(index, cases, k=args.k), 3),
+        "mrr": round(mean_reciprocal_rank(index, cases, k=args.k), 3),
         "results": [asdict(result) for result in results],
     }
     if args.json:
         print(json.dumps(payload, indent=2))
     else:
-        print({key: payload[key] for key in ("cases", "k", "recall_at_k")})
+        print({key: payload[key] for key in ("cases", "k", "recall_at_k", "precision_at_k", "mrr")})
 
 
 if __name__ == "__main__":
