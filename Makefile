@@ -1,10 +1,18 @@
-.PHONY: test compile run index eval benchmark validate compose-up compose-down
+.PHONY: test compile lint typecheck ci run index eval benchmark validate compose-up compose-down
 
 test:
 	PYTHONPATH=src python3 -m unittest discover -s tests
 
 compile:
 	PYTHONPYCACHEPREFIX=.pycache_tmp python3 -m compileall src tests scripts
+
+lint:
+	python3 -m ruff check src tests scripts
+
+typecheck:
+	python3 -m mypy src
+
+ci: test compile eval
 
 run:
 	uvicorn rag_platform.main:app --reload --app-dir src
@@ -26,4 +34,3 @@ compose-up:
 
 compose-down:
 	docker compose down
-
