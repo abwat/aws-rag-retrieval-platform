@@ -54,6 +54,22 @@ class RagApiTest(unittest.TestCase):
 
         self.assertEqual(response.status_code, 422)
 
+    def test_empty_retrieval_returns_no_citations_and_updates_metrics(self) -> None:
+        response = self.client.post(
+            "/query",
+            json={"question": "zzzz unmatched token", "k": 1},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["citations"], [])
+        self.assertEqual(payload["retrieved_context"], [])
+        self.assertIn("not have enough retrieved context", payload["answer"])
+
+        metrics = self.client.get("/metrics")
+        self.assertIn("rag_queries_total 1", metrics.text)
+        self.assertIn("rag_empty_retrievals_total 1", metrics.text)
+
 
 if __name__ == "__main__":
     unittest.main()

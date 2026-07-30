@@ -52,6 +52,13 @@ class RetrievalTest(unittest.TestCase):
         self.assertEqual(mean_reciprocal_rank(index, cases, k=2), 1.0)
         self.assertEqual(precision_at_k(index, cases, k=2), 0.5)
 
+    def test_metrics_return_zero_for_empty_case_sets(self) -> None:
+        index = SparseRetrievalIndex([])
+
+        self.assertEqual(recall_at_k(index, [], k=3), 0.0)
+        self.assertEqual(mean_reciprocal_rank(index, [], k=3), 0.0)
+        self.assertEqual(precision_at_k(index, [], k=3), 0.0)
+
 
 if __name__ == "__main__":
     unittest.main()
