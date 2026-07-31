@@ -31,6 +31,35 @@ class RetrievalTest(unittest.TestCase):
 
         self.assertEqual(loaded.search("chunking", k=1)[0].chunk.document_id, "retrieval")
 
+    def test_saved_index_includes_metadata(self) -> None:
+        chunks = build_chunks(
+            {
+                "retrieval": "# Retrieval\nChunking benchmarks compare strategies.",
+                "operations": "# Operations\nRunbooks describe operational checks.",
+            }
+        )
+        index = SparseRetrievalIndex(chunks)
+
+        self.assertEqual(
+            index.metadata(),
+            {
+                "schema_version": 1,
+                "chunk_count": 2,
+                "document_ids": ["operations", "retrieval"],
+            },
+        )
+
+    def test_load_rejects_mismatched_chunk_count(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "index.json"
+            path.write_text(
+                '{"schema_version": 1, "chunk_count": 2, "chunks": []}',
+                encoding="utf-8",
+            )
+
+            with self.assertRaises(ValueError):
+                SparseRetrievalIndex.load(path)
+
     def test_recall_at_k(self) -> None:
         chunks = build_chunks({"aws_architecture": "# AWS\nBedrock is isolated behind an adapter."})
         index = SparseRetrievalIndex(chunks)

@@ -6,11 +6,13 @@ import re
 from collections import Counter, defaultdict
 from dataclasses import asdict, dataclass
 from pathlib import Path
+from typing import Any
 
 from .chunking import Chunk
 
 
 TOKEN_RE = re.compile(r"[a-zA-Z0-9_]+")
+INDEX_SCHEMA_VERSION = 1
 
 
 def tokenize(text: str) -> list[str]:
@@ -66,12 +68,33 @@ class SparseRetrievalIndex:
         denominator = term_frequency + k1 * (1 - b + b * length_norm)
         return self.idf.get(term, 0.0) * numerator / denominator
 
+    def metadata(self) -> dict[str, object]:
+        return {
+            "schema_version": INDEX_SCHEMA_VERSION,
+            "chunk_count": len(self.chunks),
+            "document_ids": sorted({chunk.document_id for chunk in self.chunks}),
+        }
+
     def save(self, path: str | Path) -> None:
-        payload = {"chunks": [asdict(chunk) for chunk in self.chunks]}
+        payload = {
+            **self.metadata(),
+            "chunks": [asdict(chunk) for chunk in self.chunks],
+        }
         Path(path).write_text(json.dumps(payload, indent=2), encoding="utf-8")
 
     @classmethod
     def load(cls, path: str | Path) -> "SparseRetrievalIndex":
         payload = json.loads(Path(path).read_text(encoding="utf-8"))
-        chunks = [Chunk(**item) for item in payload["chunks"]]
+        chunks_payload = cls._validated_chunks_payload(payload)
+        chunks = [Chunk(**item) for item in chunks_payload]
         return cls(chunks)
+
+    @staticmethod
+    def _validated_chunks_payload(payload: dict[str, Any]) -> list[dict[str, Any]]:
+        chunks = payload.get("chunks")
+        if not isinstance(chunks, list):
+            raise ValueError("index payload must contain a chunks list")
+        chunk_count = payload.get("chunk_count")
+        if chunk_count is not None and chunk_count != len(chunks):
+            raise ValueError("index chunk_count does not match chunks list")
+        return chunks
